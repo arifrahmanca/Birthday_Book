@@ -23,25 +23,16 @@ create
 
 feature {NONE, ES_TEST} -- implementation
 
---	imp: HASH_TABLE [BIRTHDAY, NAME]
-			-- implementation as an efficient hash table
 	imp : ARRAY[TUPLE[name: NAME; bd : BIRTHDAY]]
-	array : ARRAY[NAME]
-	list  : LINKED_LIST[BIRTHDAY]
 
 	make
 			-- create a birthday book
 		do
 			create imp.make_empty
 			imp.compare_objects
-			create array.make_empty
-			create list.make
-			array.compare_objects
-			list.compare_objects
+			
 		ensure
-			model.is_empty and
-			array.is_empty and
-			list.is_empty
+			model.is_empty
 		end
 
 feature -- model
@@ -54,35 +45,22 @@ feature -- model
 		local
 			a_name : NAME
 			a_date : BIRTHDAY
---			i : INTEGER
 
 		do
-
 			create Result.make_empty
---			i := 1
-			across 1 |..| array.count is i
+			across imp is tuple
 			loop
-				a_name := array.at (i)
-				a_date := list.at (i)
+				a_name := tuple.name
+				a_date := tuple.bd
 				Result.extend ([a_name, a_date])
 			end
 
---		do
---			create Result.make_empty
---			across imp is tuple
---			loop
---				a_name := tuple.name
---				a_date := tuple.bd
---				Result.extend ([a_name, a_date])
---			end
-
 		ensure -- ∀name ∈ Result.domain: Result[name] = imp[name]
 
-			across Result.domain is al_name all
-				array.has (al_name)
+--			across Result.domain is al_name all
 --				imp.has ([al_name])
 --				and then imp [al_name] ~ Result[al_name]
-			end
+--			end
 			same_count: Result.count = array.count and Result.count = list.count
 		end
 
@@ -93,35 +71,20 @@ feature -- command
 			-- or overrride current birthday with new
 
 		do
-			if array.has (a_name) then
-				across 1 |..| array.count is i
+			if imp.has ([a_name, d]) then
+				across imp is tuple
 				loop
-					if array.at (i) ~ a_name then
-						list.at (i) := d
+					if tuple.name ~ a_name then
+						tuple.bd := d
 					end
 				end
 			else
-					array.force (a_name, array.count + 1)
-					list.extend (d)
---					list.forth
+				imp.force ([a_name, d], imp.count+ 1)
 			end
-
---			if imp.has ([a_name, d]) then
---				across imp is tuple
---				loop
---					if tuple.name ~ a_name then
---						tuple.bd := d
---					end
---				end
---			else
---				imp.force ([a_name, d], imp.count+ 1)
---			end
 
 		ensure
 			model_override: -- model = (old model)↾[a_name, d]
 				model ~ (old model.deep_twin @<+ [a_name, d])
---				model ~ (old model.deep_twin.overriden_by ([a_name, d]))
-
 		end
 
 feature -- queries
