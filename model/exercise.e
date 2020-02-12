@@ -61,7 +61,7 @@ feature -- model
 --				imp.has ([al_name])
 --				and then imp [al_name] ~ Result[al_name]
 --			end
-			same_count: Result.count = array.count and Result.count = list.count
+			same_count: Result.count = imp.count
 		end
 
 feature -- command
