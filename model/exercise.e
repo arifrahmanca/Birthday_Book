@@ -74,10 +74,9 @@ feature -- model
 
 		ensure -- ∀name ∈ Result.domain: Result[name] = imp[name]
 
---			across Result.domain is al_name all
---				imp.has ([al_name])
---				and then imp [al_name] ~ Result[al_name]
---			end
+			across Result.domain is al_name all
+				list.has ([al_name, Result[al_name]])				
+			end
 			same_count: Result.count = list.count
 		end
 
