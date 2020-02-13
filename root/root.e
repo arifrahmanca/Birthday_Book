@@ -20,6 +20,7 @@ feature {NONE} -- Initialization
 		do
 			add_test (create {TEST_BIRTHDAY_BOOK}.make)
 			add_test (create {TEST_EXERCISE}.make)
+			add_test (create {TEST_EXERCISE_2}.make)
 			show_browser
 			run_espec
 		end
