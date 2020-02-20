@@ -130,4 +130,4 @@ feature -- queries
 
 invariant
 	count =  model.count
-end
+end 
